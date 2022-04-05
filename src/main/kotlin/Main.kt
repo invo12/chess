@@ -1,11 +1,16 @@
+import pieces.Piece
+import pieces.PieceInfo
+import pieces.PieceType
 import pieces.Position
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.IOException
+import java.lang.Thread.sleep
 import javax.imageio.ImageIO
 import javax.swing.JFrame
+
 
 typealias Img = BufferedImage
 
@@ -43,50 +48,31 @@ fun loadBoardTiles(blackTilePath: String, whiteTilePath: String): List<Img?> {
     return listOf(blackTile, whiteTile)
 }
 
-class Graphics(
-    private val pieceImages: Map<String, Img>, private val blackTileImage: Img,
-    private val whiteTileImage: Img
-) : JFrame() {
+fun initPieces(state: String, pieceImages: Map<String, Img>): List<Piece> {
 
-    private val offsetX = 3
-    private val offsetY = 30
-    private val tileSize = 64
+    val pieces = mutableListOf<Piece>()
+    var rank = 8
+    var file = 1
 
-    private fun drawOnSquare(graphics2D: Graphics2D, image: Img, row: Int, col: Int) {
-        graphics2D.drawImage(
-            image,
-            offsetX + tileSize * (row - 1),
-            offsetY + 512 - tileSize * col,
-            tileSize,
-            tileSize,
-            null
-        )
-    }
+    for (c in state) {
 
-    private fun drawBoard(graphics2D: Graphics2D) {
-
-        var image: Img
-        for (i in 1..8) {
-            for (j in 1..8) {
-                image = if ((i + j) % 2 == 0) whiteTileImage else blackTileImage
-                drawOnSquare(graphics2D, image, i, j)
+        when {
+            c == '/' -> { //new row
+                rank--
+                file = 1
+            }
+            c in '1'..'8' -> { //empty
+                file += c - '1'
+            }
+            else -> {
+                val pieceType: PieceType = c.toString()
+                pieces.add(Piece(PieceInfo(pieceType, pieceImages[pieceType]!!, Position(file, rank))))
+                file++
             }
         }
     }
 
-    private fun drawPieces(graphics2D: Graphics2D, positions: Map<Position, String>) {
-
-        positions.forEach {
-            drawOnSquare(graphics2D, pieceImages[it.value]!!, it.key.row, it.key.column)
-        }
-    }
-
-    override fun paint(g: Graphics?) {
-        super.paint(g)
-        val graphics2D = (g as? Graphics2D)
-        drawBoard(graphics2D!!)
-        drawPieces(graphics2D, mapOf(Position(2, 3) to "Q"))
-    }
+    return pieces.toList()
 }
 
 fun main() {
@@ -95,7 +81,9 @@ fun main() {
     val pieceImages = loadPieceImages("$path/pieces.png")
     val (blackTileImage, whiteTileImage) = loadBoardTiles("$path/blackTile.png", "$path/whiteTile.png")
 
-    val frame = Graphics(pieceImages, blackTileImage!!, whiteTileImage!!)
+    val pieces = initPieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", pieceImages)
+
+    val frame = Graphics(pieceImages, blackTileImage!!, whiteTileImage!!, pieces.associate { it.getPosition() to it.getType() })
 
     frame.layout = null
     frame.setLocationRelativeTo(null)

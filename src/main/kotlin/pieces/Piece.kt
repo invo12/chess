@@ -10,4 +10,8 @@ class Piece(private val pieceInfo: PieceInfo) {
     fun move(position: Position) {
         pieceInfo.position = position
     }
+
+    fun getType(): PieceType {
+        return pieceInfo.type
+    }
 }

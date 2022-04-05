@@ -2,7 +2,7 @@ package pieces
 
 import java.awt.Image
 
-typealias Position = Pair<Int, Int>
+data class Position(var row: Int, var column: Int)
 
 data class PieceInfo(
     val type: PieceType,

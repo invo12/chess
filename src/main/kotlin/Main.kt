@@ -1,7 +1,11 @@
+import graphics.Graphics
 import pieces.Piece
 import pieces.PieceInfo
 import pieces.PieceType
 import pieces.Position
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
+import java.awt.event.MouseListener
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.IOException
@@ -30,7 +34,7 @@ fun loadPieceImages(path: String): Map<String, Img> {
 
     for (i in 0 until rows) {
         for (j in 0 until cols) {
-            sprites.add(pieces!!.getSubimage(j * width, i * height, width, height))
+            sprites.add(pieces!!.getSubimage(j * width, i * height, width, height)!!)
         }
     }
     return "KQBNRPkqbnrp".toCharArray().zip(sprites).toMap().mapKeys { it.key.toString() }
@@ -44,7 +48,7 @@ fun loadBoardTiles(blackTilePath: String, whiteTilePath: String): List<Img?> {
     return listOf(blackTile, whiteTile)
 }
 
-fun initPieces(state: String, pieceImages: Map<String, Img>): List<Piece> {
+fun initPieces(state: String): MutableList<Piece> {
 
     val pieces = mutableListOf<Piece>()
     var rank = 8
@@ -62,29 +66,54 @@ fun initPieces(state: String, pieceImages: Map<String, Img>): List<Piece> {
             }
             else -> {
                 val pieceType: PieceType = c.toString()
-                pieces.add(Piece(PieceInfo(pieceType, pieceImages[pieceType]!!, Position(file, rank))))
+                pieces.add(Piece(PieceInfo(pieceType, Position(file, rank))))
                 file++
             }
         }
     }
 
-    return pieces.toList()
+    return pieces
+}
+
+object Images {
+    private val path = "src/main/resources/"
+    private val tileImages = loadBoardTiles("$path/blackTile.png", "$path/whiteTile.png")
+
+    val blackTileImage = tileImages[0]!!
+    val whiteTileImage = tileImages[1]!!
+    val pieceImages = loadPieceImages("$path/pieces.png")
+    val moveImage = readImage("$path/move.png")!!
+
+    val offsetX = 3
+    val offsetY = 30
+    val tileSize = 64
 }
 
 fun main() {
 
-    val path = "src/main/resources/"
-    val pieceImages = loadPieceImages("$path/pieces.png")
-    val (blackTileImage, whiteTileImage) = loadBoardTiles("$path/blackTile.png", "$path/whiteTile.png")
-    val moveImage = readImage("$path/move.png")
 
-    val pieces = initPieces("rnbqkbnr/pppppppp/8/8/8/7p/PPPPPPPP/RNBQKBNR", pieceImages)
 
-    val frame = Graphics(pieceImages, blackTileImage!!, whiteTileImage!!, pieces, moveImage!!)
+    val pieces = initPieces("rnbqkbnr/pppppppp/8/8/8/7p/PPPPPPPP/RNBQKBNR")
 
-    frame.layout = null
-    frame.setLocationRelativeTo(null)
-    frame.setSize(520, 550)
-    frame.isVisible = true
-    frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+    val graphics = Graphics(pieces)
+
+    graphics.layout = null
+    graphics.setLocationRelativeTo(null)
+    graphics.setSize(520, 550)
+    graphics.isVisible = true
+    graphics.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+
+    val game = Game(graphics, mapOf(), pieces)
+
+    val listener: MouseListener = object : MouseAdapter() {
+        override fun mouseClicked(e: MouseEvent) {
+            val x = (e.point.x - Images.offsetX) / Images.tileSize + 1
+            val y = (512 - e.point.y + Images.offsetY) / Images.tileSize + 1
+            game.notify(x, y)
+        }
+    }
+
+    graphics.addMouseListener(listener)
+
+
 }

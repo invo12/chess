@@ -2,15 +2,11 @@ import pieces.Piece
 import pieces.PieceInfo
 import pieces.PieceType
 import pieces.Position
-import java.awt.Graphics
-import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.IOException
-import java.lang.Thread.sleep
 import javax.imageio.ImageIO
 import javax.swing.JFrame
-
 
 typealias Img = BufferedImage
 
@@ -56,12 +52,12 @@ fun initPieces(state: String, pieceImages: Map<String, Img>): List<Piece> {
 
     for (c in state) {
 
-        when {
-            c == '/' -> { //new row
+        when (c) {
+            '/' -> { //new row
                 rank--
                 file = 1
             }
-            c in '1'..'8' -> { //empty
+            in '1'..'8' -> { //empty
                 file += c - '1'
             }
             else -> {
@@ -80,10 +76,11 @@ fun main() {
     val path = "src/main/resources/"
     val pieceImages = loadPieceImages("$path/pieces.png")
     val (blackTileImage, whiteTileImage) = loadBoardTiles("$path/blackTile.png", "$path/whiteTile.png")
+    val moveImage = readImage("$path/move.png")
 
-    val pieces = initPieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", pieceImages)
+    val pieces = initPieces("rnbqkbnr/pppppppp/8/8/8/7p/PPPPPPPP/RNBQKBNR", pieceImages)
 
-    val frame = Graphics(pieceImages, blackTileImage!!, whiteTileImage!!, pieces.associate { it.getPosition() to it.getType() })
+    val frame = Graphics(pieceImages, blackTileImage!!, whiteTileImage!!, pieces, moveImage!!)
 
     frame.layout = null
     frame.setLocationRelativeTo(null)

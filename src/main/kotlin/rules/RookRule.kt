@@ -2,13 +2,12 @@ package rules
 
 import pieces.Position
 
-class CaptureRule : Rule {
-
+class RookRule: Rule {
     override fun getValidPositions(
         currentPosition: Position,
-        otherPieces: List<Position>,
-        validMoves: List<Position>
-    ): List<Position> {
+        friendlyPositions: List<Position>,
+        enemyPositions: List<Position>
+    ): Pair<List<Position>, List<Position>> {
         TODO("Not yet implemented")
     }
 }

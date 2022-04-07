@@ -103,7 +103,7 @@ fun main() {
     graphics.isVisible = true
     graphics.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 
-    val game = Game(graphics, mapOf(), pieces)
+    val game = Game(graphics, pieces)
 
     val listener: MouseListener = object : MouseAdapter() {
         override fun mouseClicked(e: MouseEvent) {

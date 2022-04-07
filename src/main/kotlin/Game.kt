@@ -1,20 +1,39 @@
 import graphics.Graphics
 import pieces.Piece
-import pieces.PieceType
 import pieces.Position
-import rules.Rule
+import rules.BlackPawnRule
+import rules.WhitePawnRule
 
+class Game(private val graphics: Graphics, private val pieces: MutableList<Piece>) {
 
-typealias RulesMap = Map<PieceType, List<Rule>>
+    private var selectedPiece: Piece? = null
+    private val rules = mapOf(
+        "p" to BlackPawnRule(),
+        "P" to WhitePawnRule()
 
-class Game(private val graphics: Graphics, private val rules: RulesMap, private val pieces: MutableList<Piece>) {
+    )
 
-    var selectedPiece: Piece? = null
+    private fun getPositions(piece: Piece): Pair<List<Position>, List<Position>> {
 
-    private fun getMovePositions(piece: Piece): List<Position> {
-        /// TODO
-        val position = piece.getPosition()
-        return listOf(Position(position.x, position.y + 1))
+        fun String.matchCase(other: String): Boolean {
+            val c: Char = this[0]
+            val oc: Char = other[0]
+            return (c.isLowerCase() && oc.isLowerCase()) || (c.isUpperCase() && oc.isUpperCase())
+        }
+
+        fun getFriendlyPositions(): List<Position> {
+            return pieces.filter { it.getType().matchCase(piece.getType()) }.map { it.getPosition() }
+        }
+
+        fun getEnemyPositions(): List<Position> {
+            return pieces.filter { !it.getType().matchCase(piece.getType()) }.map { it.getPosition() }
+        }
+
+        return rules[piece.getType()]?.getValidPositions(
+            piece.getPosition(),
+            getFriendlyPositions(),
+            getEnemyPositions()
+        ) ?: Pair(listOf(), listOf())
     }
 
     private fun nextTurn() {
@@ -26,16 +45,17 @@ class Game(private val graphics: Graphics, private val rules: RulesMap, private 
         val piece = pieces.find { it.getPosition() == Position(x, y) }
         if (piece != null) {
             selectedPiece = piece
-            graphics.showMoves(listOf(Position(x, y + 1)))
+            graphics.showMoves(getPositions(piece).first + getPositions(piece).second)
         } else {
             val movePositions = selectedPiece?.let {
-                getMovePositions(it)
+                getPositions(it).first + getPositions(it).second
             }
             val positionToMove = movePositions?.find { it.x == x && it.y == y }
-            if(positionToMove == null){
+            if (positionToMove == null) {
                 graphics.showMoves(listOf())
             } else {
-                selectedPiece?.getPosition()?.y = selectedPiece?.getPosition()?.y?.plus(1)!!
+                selectedPiece?.getPosition()?.x = x
+                selectedPiece?.getPosition()?.y = y
                 graphics.updatePieces(pieces)
             }
             selectedPiece = null

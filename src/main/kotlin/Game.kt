@@ -1,6 +1,7 @@
 import graphics.Graphics
 import pieces.Piece
 import pieces.Position
+import rules.BishopRule
 import rules.BlackPawnRule
 import rules.RookRule
 import rules.WhitePawnRule
@@ -12,7 +13,9 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
         "p" to BlackPawnRule(),
         "P" to WhitePawnRule(),
         "r" to RookRule(),
-        "R" to RookRule()
+        "R" to RookRule(),
+        "b" to BishopRule(),
+        "B" to BishopRule()
     )
 
     private fun getPositions(piece: Piece): Pair<List<Position>, List<Position>> {

@@ -14,7 +14,9 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
         "b" to BishopRule(),
         "B" to BishopRule(),
         "q" to QueenRule(),
-        "Q" to QueenRule()
+        "Q" to QueenRule(),
+        "n" to KnightRule(),
+        "N" to KnightRule(),
     )
 
     private fun getPositions(piece: Piece): Pair<List<Position>, List<Position>> {

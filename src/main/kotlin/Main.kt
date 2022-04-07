@@ -84,14 +84,12 @@ object Images {
     val pieceImages = loadPieceImages("$path/pieces.png")
     val moveImage = readImage("$path/move.png")!!
 
-    val offsetX = 3
-    val offsetY = 30
-    val tileSize = 64
+    const val offsetX = 3
+    const val offsetY = 30
+    const val tileSize = 64
 }
 
 fun main() {
-
-
 
     val pieces = initPieces("rnbqkbnr/pppppppp/8/8/8/7p/PPPPPPPP/RNBQKBNR")
 

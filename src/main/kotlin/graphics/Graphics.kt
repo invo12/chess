@@ -14,7 +14,6 @@ class Graphics(
 ) : JFrame() {
 
     private var moveList: List<Position> = listOf()
-    private var selectedPiece: Piece? = null
 
     private fun differentColors(piece1: Piece?, piece2: Piece?): Boolean {
 

@@ -27,21 +27,20 @@ class BlackPawnRule : Rule {
             listOf()
         } else {
             val result = mutableListOf(forwardPosition)
-            if(currentPosition.y == 7) {
+            if (currentPosition.y == 7) {
                 val doubleForwardPosition = currentPosition + Position(0, -2)
                 val other =
                     friendlyPositions.find { it == doubleForwardPosition }
                         ?: enemyPositions.find { it == doubleForwardPosition }
-                if(other == null)
+                if (other == null)
                     result.add(doubleForwardPosition)
             }
             result.toList()
         }
     }
 
-    private fun getCapturePositions(
-        currentPosition: Position, enemyPositions: List<Position>
-    ): List<Position> {
+    private fun getCapturePositions(currentPosition: Position, enemyPositions: List<Position>): List<Position> {
+
         val lowerLeft = currentPosition + Position(-1, -1)
         val lowerRight = currentPosition + Position(1, -1)
         return enemyPositions.filter { it == lowerLeft || it == lowerRight }

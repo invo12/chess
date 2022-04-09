@@ -1,5 +1,7 @@
 package pieces
 
+import TurnColor
+
 fun String.matchCase(other: String): Boolean {
     val c: Char = this[0]
     val oc: Char = other[0]
@@ -22,5 +24,9 @@ class Piece(private val pieceInfo: PieceInfo) {
 
     fun hasTheSameColor(p: Piece): Boolean {
         return this.getType().matchCase(p.getType())
+    }
+
+    fun hasTurnColor(color: TurnColor): Boolean {
+        return getType().matchCase(if (color) "T" else "t")
     }
 }

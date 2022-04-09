@@ -3,9 +3,13 @@ import pieces.Piece
 import pieces.Position
 import rules.*
 
+typealias TurnColor = Boolean
+
 class Game(private val graphics: Graphics, private val pieces: MutableList<Piece>) {
 
     private var selectedPiece: Piece? = null
+    private var turn: TurnColor = true
+
     private val rules = mapOf(
         "p" to BlackPawnRule(),
         "P" to WhitePawnRule(),
@@ -40,7 +44,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
     }
 
     private fun nextTurn() {
-
+        turn = !turn
     }
 
     fun notify(x: Int, y: Int) {
@@ -48,7 +52,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
         val piece = pieces.find { it.getPosition() == Position(x, y) }
         if (selectedPiece != null) {
             if (piece != null) {
-                if (piece.hasTheSameColor(selectedPiece!!)) {
+                if (piece.hasTurnColor(turn)) {
                     selectedPiece = piece
                     val moves = getMoves(piece)
                     graphics.showMoves(moves.first + moves.second)
@@ -61,6 +65,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
                         graphics.updatePieces(pieces)
                         graphics.showMoves(listOf())
                         selectedPiece = null
+                        nextTurn()
                     }
                 }
             } else {
@@ -72,14 +77,14 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
                 if (positionToMove == null) {
                     graphics.showMoves(listOf())
                 } else {
-                    selectedPiece?.getPosition()?.x = x
-                    selectedPiece?.getPosition()?.y = y
+                    selectedPiece?.move(Position(x, y))
                     graphics.updatePieces(pieces)
+                    nextTurn()
                 }
                 selectedPiece = null
             }
         } else {
-            if (piece != null) {
+            if (piece != null && piece.hasTurnColor(turn)) {
                 selectedPiece = piece
                 val moves = getMoves(piece)
                 graphics.showMoves(moves.first + moves.second)
@@ -88,7 +93,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
     }
 
     fun start() {
-
+        turn = true
     }
 
 }

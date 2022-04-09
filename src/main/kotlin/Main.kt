@@ -66,7 +66,7 @@ fun initPieces(state: String): MutableList<Piece> {
             }
             else -> {
                 val pieceType: PieceType = c.toString()
-                pieces.add(Piece(PieceInfo(pieceType, Position(file, rank))))
+                pieces.add(Piece(PieceInfo(pieceType, Position(file, rank), Position(file, rank))))
                 file++
             }
         }
@@ -113,5 +113,5 @@ fun main() {
 
     graphics.addMouseListener(listener)
 
-
+    game.start()
 }

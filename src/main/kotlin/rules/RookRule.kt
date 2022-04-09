@@ -1,12 +1,17 @@
 package rules
 
+import pieces.Piece
 import pieces.Position
 
 class RookRule : Rule {
     override fun getValidPositions(
-        currentPosition: Position, friendlyPositions: List<Position>,
-        enemyPositions: List<Position>
+        currentPiece: Piece, friendlyPieces: List<Piece>,
+        enemyPieces: List<Piece>
     ): Pair<List<Position>, List<Position>> {
+
+        val currentPosition = currentPiece.getPosition()
+        val friendlyPositions = friendlyPieces.map { it.getPosition() }
+        val enemyPositions = enemyPieces.map { it.getPosition() }
 
         fun searchByCriteria(
             positions: List<Position>, xOp: (Int, Int) -> Boolean, yOp: (Int, Int) -> Boolean,

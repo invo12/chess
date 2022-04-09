@@ -15,16 +15,6 @@ class Graphics(
 
     private var moveList: List<Position> = listOf()
 
-    private fun differentColors(piece1: Piece?, piece2: Piece?): Boolean {
-
-        if(piece1 == null || piece2 == null) return false
-
-        val s1 = piece1.getType()
-        val s2 = piece2.getType()
-        return ! ((s1[0].isUpperCase() && s2[0].isUpperCase()) ||
-                (s1[0].isLowerCase() && s2[0].isLowerCase()))
-    }
-
     private fun drawOnSquare(graphics2D: Graphics2D, image: Img, x: Int, y: Int) {
         graphics2D.drawImage(
             image,
@@ -41,7 +31,7 @@ class Graphics(
         var image: Img
         for (i in 1..8) {
             for (j in 1..8) {
-                image = if ((i + j) % 2 == 0) Images.whiteTileImage else Images.blackTileImage
+                image = if ((i + j) % 2 == 1) Images.whiteTileImage else Images.blackTileImage
                 drawOnSquare(graphics2D, image, i, j)
             }
         }

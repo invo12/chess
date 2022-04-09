@@ -15,6 +15,7 @@ class Piece(private val pieceInfo: PieceInfo) {
     }
 
     fun move(position: Position) {
+        pieceInfo.lastPosition = pieceInfo.position
         pieceInfo.position = position
     }
 
@@ -28,5 +29,9 @@ class Piece(private val pieceInfo: PieceInfo) {
 
     fun hasTurnColor(color: TurnColor): Boolean {
         return getType().matchCase(if (color) "T" else "t")
+    }
+
+    fun getLastPosition(): Position {
+        return pieceInfo.lastPosition
     }
 }

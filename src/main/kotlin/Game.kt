@@ -7,6 +7,8 @@ typealias TurnColor = Boolean
 
 class Game(private val graphics: Graphics, private val pieces: MutableList<Piece>) {
 
+    private val whiteKing = pieces.find { it.getType() == "K" }!!
+    private val blackKing = pieces.find { it.getType() == "k" }!!
     private var selectedPiece: Piece? = null
     private var turn: TurnColor = true
 
@@ -27,19 +29,18 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
 
     private fun getMoves(piece: Piece): Pair<List<Position>, List<Position>> {
 
-
-        fun getFriendlyPositions(): List<Position> {
-            return pieces.filter { it.hasTheSameColor(piece) }.map { it.getPosition() }
+        fun getFriendlyPieces(): List<Piece> {
+            return pieces.filter { it.hasTheSameColor(piece) }
         }
 
-        fun getEnemyPositions(): List<Position> {
-            return pieces.filter { !it.hasTheSameColor(piece) }.map { it.getPosition() }
+        fun getEnemyPieces(): List<Piece> {
+            return pieces.filter { !it.hasTheSameColor(piece) }
         }
 
         return rules[piece.getType()]?.getValidPositions(
-            piece.getPosition(),
-            getFriendlyPositions(),
-            getEnemyPositions()
+            piece,
+            getFriendlyPieces(),
+            getEnemyPieces()
         ) ?: Pair(listOf(), listOf())
     }
 
@@ -49,39 +50,47 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
 
     fun notify(x: Int, y: Int) {
 
+        fun resolvePiece(piece: Piece) {
+            if (piece.hasTurnColor(turn)) {
+                selectedPiece = piece
+                val moves = getMoves(piece)
+                graphics.showMoves(moves.first + moves.second)
+            } else {
+                val (_, captures) = getMoves(selectedPiece!!)
+                val capture = captures.find { it == Position(x, y) }
+                if (capture != null) {
+                    pieces.remove(piece)
+                    selectedPiece!!.move(Position(x, y))
+                    graphics.updatePieces(pieces)
+                    graphics.showMoves(listOf())
+                    selectedPiece = null
+                    nextTurn()
+                }
+            }
+        }
+
+        fun resolveMovePositions() {
+            val movePositions = selectedPiece?.let {
+                val moves = getMoves(it)
+                moves.first + moves.second
+            }
+            val positionToMove = movePositions?.find { it.x == x && it.y == y }
+            if (positionToMove == null) {
+                graphics.showMoves(listOf())
+            } else {
+                selectedPiece?.move(Position(x, y))
+                graphics.updatePieces(pieces)
+                nextTurn()
+            }
+            selectedPiece = null
+        }
+
         val piece = pieces.find { it.getPosition() == Position(x, y) }
         if (selectedPiece != null) {
             if (piece != null) {
-                if (piece.hasTurnColor(turn)) {
-                    selectedPiece = piece
-                    val moves = getMoves(piece)
-                    graphics.showMoves(moves.first + moves.second)
-                } else {
-                    val (_, captures) = getMoves(selectedPiece!!)
-                    val capture = captures.find { it == Position(x, y) }
-                    if (capture != null) {
-                        pieces.remove(piece)
-                        selectedPiece!!.move(Position(x, y))
-                        graphics.updatePieces(pieces)
-                        graphics.showMoves(listOf())
-                        selectedPiece = null
-                        nextTurn()
-                    }
-                }
+                resolvePiece(piece)
             } else {
-                val movePositions = selectedPiece?.let {
-                    val moves = getMoves(it)
-                    moves.first + moves.second
-                }
-                val positionToMove = movePositions?.find { it.x == x && it.y == y }
-                if (positionToMove == null) {
-                    graphics.showMoves(listOf())
-                } else {
-                    selectedPiece?.move(Position(x, y))
-                    graphics.updatePieces(pieces)
-                    nextTurn()
-                }
-                selectedPiece = null
+                resolveMovePositions()
             }
         } else {
             if (piece != null && piece.hasTurnColor(turn)) {

@@ -1,5 +1,6 @@
 package rules
 
+import pieces.Piece
 import pieces.Position
 
 class QueenRule : Rule {
@@ -8,15 +9,15 @@ class QueenRule : Rule {
     private val rookRule: Rule = RookRule()
 
     override fun getValidPositions(
-        currentPosition: Position,
-        friendlyPositions: List<Position>,
-        enemyPositions: List<Position>
+        currentPiece: Piece,
+        friendlyPieces: List<Piece>,
+        enemyPieces: List<Piece>
     ): Pair<List<Position>, List<Position>> {
 
         val (diagonalMovePositions, diagonalCapturePositions) =
-            bishopRule.getValidPositions(currentPosition, friendlyPositions, enemyPositions)
+            bishopRule.getValidPositions(currentPiece, friendlyPieces, enemyPieces)
         val (straightMovePositions, straightCapturePositions) =
-            rookRule.getValidPositions(currentPosition, friendlyPositions, enemyPositions)
+            rookRule.getValidPositions(currentPiece, friendlyPieces, enemyPieces)
         return Pair(straightMovePositions + diagonalMovePositions, straightCapturePositions + diagonalCapturePositions)
     }
 }

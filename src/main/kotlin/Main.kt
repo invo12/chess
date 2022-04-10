@@ -91,7 +91,7 @@ object Images {
 
 fun main() {
 
-    val pieces = initPieces("rnbqkbnr/pppppppp/8/8/8/7p/PPPPPPPP/RNBQKBNR")
+    val pieces = initPieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
 
     val graphics = Graphics(pieces)
 

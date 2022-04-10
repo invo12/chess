@@ -2,6 +2,7 @@ import graphics.Graphics
 import pieces.Piece
 import pieces.Position
 import rules.*
+import java.util.*
 
 typealias TurnColor = Boolean
 
@@ -70,12 +71,35 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
         }
 
         fun resolveMovePositions() {
-            val movePositions = selectedPiece?.let {
+            val (moves, captures) = selectedPiece!!.let {
                 val moves = getMoves(it)
-                moves.first + moves.second
+                Pair(moves.first, moves.second)
             }
-            val positionToMove = movePositions?.find { it.x == x && it.y == y }
+            val positionToMove = moves.find { it.x == x && it.y == y }
             if (positionToMove == null) {
+                // en passant
+                if (selectedPiece!!.getType().lowercase(Locale.getDefault()) == "p") {
+                    val capturePosition = captures.find { it.x == x && it.y == y }
+                    if (capturePosition != null) {
+                        if (selectedPiece!!.getType() == "p") {
+                            val piece = pieces.find { it.getPosition() == Position(x, y + 1) }
+                            pieces.remove(piece)
+                            selectedPiece!!.move(Position(x, y))
+                            graphics.updatePieces(pieces)
+                            graphics.showMoves(listOf())
+                            selectedPiece = null
+                        } else if (selectedPiece!!.getType() == "P") {
+                            val piece = pieces.find { it.getPosition() == Position(x, y - 1) }
+                            pieces.remove(piece)
+                            selectedPiece!!.move(Position(x, y))
+                            graphics.updatePieces(pieces)
+                            graphics.showMoves(listOf())
+                            selectedPiece = null
+                        }
+                        nextTurn()
+                        println(pieces.size)
+                    }
+                }
                 graphics.showMoves(listOf())
             } else {
                 selectedPiece?.move(Position(x, y))

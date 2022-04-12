@@ -13,7 +13,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
     private var selectedPiece: Piece? = null
     private var turn: TurnColor = true
 
-    private val rules = mapOf(
+    private val movementRules = mapOf(
         "p" to BlackPawnRule(),
         "P" to WhitePawnRule(),
         "r" to RookRule(),
@@ -38,7 +38,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
             return pieces.filter { !it.hasTheSameColor(piece) }
         }
 
-        return rules[piece.getType()]?.getValidPositions(
+        return movementRules[piece.getType()]?.getValidPositions(
             piece,
             getFriendlyPieces(),
             getEnemyPieces()

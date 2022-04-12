@@ -4,6 +4,7 @@ import pieces.Piece
 import pieces.Position
 
 class KnightRule : Rule {
+
     override fun getValidPositions(
         currentPiece: Piece,
         friendlyPieces: List<Piece>,
@@ -25,10 +26,6 @@ class KnightRule : Rule {
             currentPosition + Position(-2, -1)
         )
 
-        val validMoves =
-            allMoves.filter { position -> friendlyPositions.find { position == it } == null }.toMutableList()
-        val captureMoves = allMoves.filter { position -> enemyPositions.find { position == it } != null }
-        validMoves.removeAll(captureMoves)
-        return Pair(validMoves, captureMoves)
+        return separateMovementAndCapturePositions(allMoves, friendlyPositions, enemyPositions)
     }
 }

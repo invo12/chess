@@ -4,6 +4,7 @@ import pieces.Piece
 import pieces.Position
 
 class KingRule : Rule {
+
     override fun getValidPositions(
         currentPiece: Piece,
         friendlyPieces: List<Piece>,
@@ -19,10 +20,7 @@ class KingRule : Rule {
             .filter { it != Position(0, 0) }
             .map { currentPosition + it }
 
-        val validMoves =
-            allMoves.filter { position -> friendlyPositions.find { position == it } == null }.toMutableList()
-        val captureMoves = allMoves.filter { position -> enemyPositions.find { position == it } != null }
-        validMoves.removeAll(captureMoves)
-        return Pair(validMoves, captureMoves)
+
+        return separateMovementAndCapturePositions(allMoves, friendlyPositions, enemyPositions)
     }
 }

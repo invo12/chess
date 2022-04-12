@@ -62,6 +62,11 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
                 if (capture != null) {
                     pieces.remove(piece)
                     selectedPiece!!.move(Position(x, y))
+                    if(selectedPiece!!.getType() == "P" && selectedPiece!!.getPosition().y == 8) {
+                        selectedPiece!!.setType("Q")
+                    } else if(selectedPiece!!.getType() == "p" && selectedPiece!!.getPosition().y == 1) {
+                        selectedPiece!!.setType("q")
+                    }
                     graphics.updatePieces(pieces)
                     graphics.showMoves(listOf())
                     selectedPiece = null
@@ -105,6 +110,11 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
                 selectedPiece?.move(Position(x, y))
                 graphics.updatePieces(pieces)
                 nextTurn()
+            }
+            if(selectedPiece!!.getType() == "P" && selectedPiece!!.getPosition().y == 8) {
+                selectedPiece!!.setType("Q")
+            } else if(selectedPiece!!.getType() == "p" && selectedPiece!!.getPosition().y == 1) {
+                selectedPiece!!.setType("q")
             }
             selectedPiece = null
         }

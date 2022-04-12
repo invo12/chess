@@ -23,6 +23,10 @@ class Piece(private val pieceInfo: PieceInfo) {
         return pieceInfo.type
     }
 
+    fun setType(pieceType: PieceType) {
+        pieceInfo.type = pieceType
+    }
+
     fun hasTheSameColor(p: Piece): Boolean {
         return this.getType().matchCase(p.getType())
     }

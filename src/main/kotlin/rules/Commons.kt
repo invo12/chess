@@ -1,5 +1,6 @@
 package rules
 
+import pieces.Piece
 import pieces.Position
 
 // for king and knight
@@ -46,4 +47,12 @@ fun getLineMoves(
         .flatten()
 
     return Pair(movePositions, capturePositions)
+}
+
+fun getFriendlyPieces(currentPiece: Piece, pieces: List<Piece>): List<Piece> {
+    return pieces.filter { it.hasTheSameColor(currentPiece) }
+}
+
+fun getEnemyPieces(currentPiece: Piece, pieces: List<Piece>): List<Piece> {
+    return pieces.filter { !it.hasTheSameColor(currentPiece) }
 }

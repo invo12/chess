@@ -15,39 +15,35 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
     private var turn: TurnColor = true
 
     private val movementRules = mapOf(
-        "p" to BlackPawnRule(),
-        "P" to WhitePawnRule(),
-        "r" to RookRule(),
-        "R" to RookRule(),
-        "b" to BishopRule(),
-        "B" to BishopRule(),
-        "q" to QueenRule(),
-        "Q" to QueenRule(),
-        "n" to KnightRule(),
-        "N" to KnightRule(),
-        "k" to KingRule(),
-        "K" to KingRule(),
+        "p" to listOf(BlackPawnRule()),
+        "P" to listOf(WhitePawnRule()),
+        "r" to listOf(RookRule()),
+        "R" to listOf(RookRule()),
+        "b" to listOf(BishopRule()),
+        "B" to listOf(BishopRule()),
+        "q" to listOf(BishopRule(), RookRule()),
+        "Q" to listOf(BishopRule(), RookRule()),
+        "n" to listOf(KnightRule()),
+        "N" to listOf(KnightRule()),
+        "k" to listOf(KingRule()),
+        "K" to listOf(KingRule()),
     )
 
     private fun getMoves(piece: Piece): Pair<List<Position>, List<Position>> {
 
-        fun getFriendlyPieces(): List<Piece> {
-            return pieces.filter { it.hasTheSameColor(piece) }
+        val rules = movementRules[piece.getType()]
+        if (rules != null) {
+            val movePositions = mutableListOf<Position>()
+            val capturePositions = mutableListOf<Position>()
+            for (rule in rules) {
+                rule.getValidPositions(selectedPiece!!, pieces, movePositions, capturePositions)
+            }
+            return Pair(movePositions, capturePositions)
         }
-
-        fun getEnemyPieces(): List<Piece> {
-            return pieces.filter { !it.hasTheSameColor(piece) }
-        }
-
-        return movementRules[piece.getType()]?.getValidPositions(
-            piece,
-            getFriendlyPieces(),
-            getEnemyPieces()
-        ) ?: Pair(listOf(), listOf())
+        return Pair(listOf(), listOf())
     }
 
     private fun nextTurn() {
-        println(isChecked())
         turn = !turn
     }
 
@@ -111,6 +107,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
             } else {
                 selectedPiece?.move(Position(x, y))
                 graphics.updatePieces(pieces)
+                println(isChecked())
                 nextTurn()
             }
             if (selectedPiece!!.getType() == "P" && selectedPiece!!.getPosition().y == 8) {
@@ -143,7 +140,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
 
     fun isChecked(): Boolean {
 
-        val currentKing = whiteKing
+        val currentKing = if (turn) blackKing else whiteKing
         val kingPosition = currentKing.getPosition()
         val friendlyPieces = pieces.filter { it.hasTheSameColor(currentKing) }
         val enemyPieces = pieces.filter { !it.hasTheSameColor(currentKing) }
@@ -197,7 +194,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
         fun checkDiagonals(): Boolean {
 
             val enemyDiagonalPieces = enemyPieces.filter {
-                it.getType().lowercase(Locale.getDefault()) == "q" && it.getType().lowercase(Locale.getDefault()) == "b"
+                it.getType().lowercase(Locale.getDefault()) == "q" || it.getType().lowercase(Locale.getDefault()) == "b"
             }
 
             fun checkPieces(x: Int, y: Int): Int {

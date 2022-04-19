@@ -7,9 +7,13 @@ class KnightRule : Rule {
 
     override fun getValidPositions(
         currentPiece: Piece,
-        friendlyPieces: List<Piece>,
-        enemyPieces: List<Piece>
-    ): Pair<List<Position>, List<Position>> {
+        pieces: List<Piece>,
+        movePositions: MutableList<Position>,
+        capturePositions: MutableList<Position>
+    ) {
+
+        val friendlyPieces = getFriendlyPieces(currentPiece, pieces)
+        val enemyPieces = getEnemyPieces(currentPiece, pieces)
 
         val currentPosition = currentPiece.getPosition()
         val friendlyPositions = friendlyPieces.map { it.getPosition() }
@@ -26,6 +30,9 @@ class KnightRule : Rule {
             currentPosition + Position(-2, -1)
         )
 
-        return separateMovementAndCapturePositions(allMoves, friendlyPositions, enemyPositions)
+        val positions = separateMovementAndCapturePositions(allMoves, friendlyPositions, enemyPositions)
+
+        movePositions.addAll(positions.first)
+        capturePositions.addAll(positions.second)
     }
 }

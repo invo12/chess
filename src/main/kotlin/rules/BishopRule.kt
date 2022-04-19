@@ -5,9 +5,14 @@ import pieces.Position
 
 class BishopRule : Rule {
     override fun getValidPositions(
-        currentPiece: Piece, friendlyPieces: List<Piece>,
-        enemyPieces: List<Piece>
-    ): Pair<List<Position>, List<Position>> {
+        currentPiece: Piece,
+        pieces: List<Piece>,
+        movePositions: MutableList<Position>,
+        capturePositions: MutableList<Position>
+    ) {
+
+        val friendlyPieces = getFriendlyPieces(currentPiece, pieces)
+        val enemyPieces = getEnemyPieces(currentPiece, pieces)
 
         val currentPosition = currentPiece.getPosition()
         val friendlyPositions = friendlyPieces.map { it.getPosition() }
@@ -21,12 +26,12 @@ class BishopRule : Rule {
         val downRightIncrement = Position(1, -1)
         val downLeftIncrement = Position(-1, -1)
 
-        return getLineMoves(
-            currentPosition,
-            enemyPositions,
-            allPositions,
-            limitFunction,
+        val positions = getLineMoves(
+            currentPosition, enemyPositions, allPositions, limitFunction,
             listOf(upLeftIncrement, upRightIncrement, downRightIncrement, downLeftIncrement)
         )
+
+        movePositions.addAll(positions.first)
+        capturePositions.addAll(positions.second)
     }
 }

@@ -33,7 +33,7 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
             val movePositions = mutableListOf<Position>()
             val capturePositions = mutableListOf<Position>()
             for (rule in rules) {
-                rule.getValidPositions(selectedPiece!!, pieces, movePositions, capturePositions)
+                rule.getValidPositions(piece, pieces, movePositions, capturePositions)
             }
             return Pair(movePositions, capturePositions)
         }
@@ -41,7 +41,35 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
     }
 
     private fun nextTurn() {
+
         turn = !turn
+        if (pieces.size == 2) {
+            graphics.showEndGameMessage("STALEMATE")
+        } else if (pieces.size == 3) {
+            val piece = pieces.find { it.getType().lowercase() != "k" }!!
+            if (piece.getType().lowercase() in listOf("n", "b")) {
+                graphics.showEndGameMessage("STALEMATE")
+            }
+        }
+        if (getTotalMoves() == 0) {
+            val king = pieces.find { it.getType().lowercase() == "k" && it.hasTurnColor(turn) }!!
+            if (isChecked(king, pieces)) {
+                graphics.showEndGameMessage(if(king.getType() == "K") "Black won" else "White won")
+            } else {
+                graphics.showEndGameMessage("STALEMATE")
+            }
+        }
+    }
+
+    private fun getTotalMoves(): Int {
+
+        val friendlyPieces = pieces.filter { it.hasTurnColor(turn) }
+        for (piece in friendlyPieces) {
+            val moves = getMoves(piece)
+            if (moves.first.size + moves.second.size > 0)
+                return 1
+        }
+        return 0
     }
 
     fun notify(x: Int, y: Int) {

@@ -42,7 +42,11 @@ fun getCapturePositions(currentPosition: Position, enemyPieces: List<Piece>, up:
         val right = currentPosition + Position(1, 0)
         if (enemyPieces.find { it.getPosition() == left }?.getLastPosition() == Position(left.x, if (up) 7 else 2))
             return listOf(Position(left.x, if (up) 6 else 3))
-        else if (enemyPieces.find { it.getPosition() == right }?.getLastPosition() == Position(right.x, if (up) 7 else 2))
+        else if (enemyPieces.find { it.getPosition() == right }?.getLastPosition() == Position(
+                right.x,
+                if (up) 7 else 2
+            )
+        )
             return listOf(Position(right.x, if (up) 6 else 3))
         return listOf()
     }
@@ -61,8 +65,9 @@ fun separateMovementAndCapturePositions(
     enemyPositions: List<Position>
 ): Pair<List<Position>, List<Position>> {
 
-    val movementPositions =
-        allMoves.filter { position -> friendlyPositions.find { position == it } == null }.toMutableList()
+    val movementPositions = allMoves
+        .filter { position -> friendlyPositions.find { position == it } == null }
+        .filter { it.x in 1..8 && it.y in 1..8 }.toMutableList()
     val captureMoves = allMoves.filter { position -> enemyPositions.find { position == it } != null }
     movementPositions.removeAll(captureMoves)
 

@@ -7,6 +7,8 @@ import pieces.Position
 import java.awt.Graphics
 import java.awt.Graphics2D
 import javax.swing.JFrame
+import javax.swing.JOptionPane.showMessageDialog
+import kotlin.system.exitProcess
 
 
 class Graphics(
@@ -72,5 +74,8 @@ class Graphics(
         drawMoves(graphics2D)
     }
 
-
+    fun showEndGameMessage(message: String) {
+        showMessageDialog(null, message)
+        exitProcess(0)
+    }
 }

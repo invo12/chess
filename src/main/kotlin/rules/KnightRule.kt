@@ -12,24 +12,11 @@ class KnightRule : Rule {
         capturePositions: MutableList<Position>
     ) {
 
-        val friendlyPieces = getFriendlyPieces(currentPiece, pieces)
-        val enemyPieces = getEnemyPieces(currentPiece, pieces)
-
+        val friendlyPositions = getFriendlyPieces(currentPiece, pieces).map { it.getPosition() }
+        val enemyPositions = getEnemyPieces(currentPiece, pieces).map { it.getPosition() }
         val currentPosition = currentPiece.getPosition()
-        val friendlyPositions = friendlyPieces.map { it.getPosition() }
-        val enemyPositions = enemyPieces.map { it.getPosition() }
 
-        val allMoves = listOf(
-            currentPosition + Position(-2, 1),
-            currentPosition + Position(-1, 2),
-            currentPosition + Position(1, 2),
-            currentPosition + Position(2, 1),
-            currentPosition + Position(2, -1),
-            currentPosition + Position(1, -2),
-            currentPosition + Position(-1, -2),
-            currentPosition + Position(-2, -1)
-        )
-
+        val allMoves = knightJumps.map { it + currentPosition }
         val positions = separateMovementAndCapturePositions(allMoves, friendlyPositions, enemyPositions)
 
         movePositions.addAll(positions.first)

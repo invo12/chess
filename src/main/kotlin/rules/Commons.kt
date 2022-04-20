@@ -3,6 +3,58 @@ package rules
 import pieces.Piece
 import pieces.Position
 
+val knightJumps = listOf(
+    Position(-2, 1), Position(-1, 2), Position(1, 2), Position(2, 1),
+    Position(2, -1), Position(1, -2), Position(-1, -2), Position(-2, -1)
+)
+
+// for pawns
+fun getMovePositionsForPawns(
+    currentPosition: Position, friendlyPositions: List<Position>,
+    enemyPositions: List<Position>, up: Boolean
+): List<Position> {
+
+    val forwardPosition = currentPosition + (if (up) Position(0, 1) else Position(0, -1))
+    val otherPiece =
+        friendlyPositions.find { it == forwardPosition } ?: enemyPositions.find { it == forwardPosition }
+    return if (otherPiece != null) {
+        listOf()
+    } else {
+        val result = mutableListOf(forwardPosition)
+        if (currentPosition.y == (if (up) 2 else 7)) {
+            val doubleForwardPosition = currentPosition + (if (up) Position(0, 2) else Position(0, -2))
+            val other =
+                friendlyPositions.find { it == doubleForwardPosition }
+                    ?: enemyPositions.find { it == doubleForwardPosition }
+            if (other == null)
+                result.add(doubleForwardPosition)
+        }
+        result.toList()
+    }
+}
+
+// for pawns
+fun getCapturePositions(currentPosition: Position, enemyPieces: List<Piece>, up: Boolean): List<Position> {
+
+    fun getEnPassantPositions(): List<Position> {
+
+        val left = currentPosition + Position(-1, 0)
+        val right = currentPosition + Position(1, 0)
+        if (enemyPieces.find { it.getPosition() == left }?.getLastPosition() == Position(left.x, if (up) 7 else 2))
+            return listOf(Position(left.x, if (up) 6 else 3))
+        else if (enemyPieces.find { it.getPosition() == right }?.getLastPosition() == Position(right.x, if (up) 7 else 2))
+            return listOf(Position(right.x, if (up) 6 else 3))
+        return listOf()
+    }
+
+    val upperLeft = currentPosition + (if (up) Position(-1, 1) else Position(-1, -1))
+    val upperRight = currentPosition + (if (up) Position(1, 1) else Position(1, -1))
+    return enemyPieces
+        .map { it.getPosition() }
+        .filter { it == upperLeft || it == upperRight } + getEnPassantPositions()
+
+}
+
 // for king and knight
 fun separateMovementAndCapturePositions(
     allMoves: List<Position>, friendlyPositions: List<Position>,

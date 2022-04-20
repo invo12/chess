@@ -12,18 +12,14 @@ class KingRule : Rule {
         capturePositions: MutableList<Position>,
     ) {
 
-        val friendlyPieces = getFriendlyPieces(currentPiece, pieces)
-        val enemyPieces = getEnemyPieces(currentPiece, pieces)
-
+        val friendlyPositions = getFriendlyPieces(currentPiece, pieces).map { it.getPosition() }
+        val enemyPositions = getEnemyPieces(currentPiece, pieces).map { it.getPosition() }
         val currentPosition = currentPiece.getPosition()
-        val friendlyPositions = friendlyPieces.map { it.getPosition() }
-        val enemyPositions = enemyPieces.map { it.getPosition() }
 
         val allMoves = listOf(-1, 0, 1)
             .flatMap { f -> listOf(-1, 0, 1).map { Position(f, it) } }
             .filter { it != Position(0, 0) }
             .map { currentPosition + it }
-
 
         val positions = separateMovementAndCapturePositions(allMoves, friendlyPositions, enemyPositions)
 

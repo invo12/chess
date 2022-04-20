@@ -11,12 +11,9 @@ class BishopRule : Rule {
         capturePositions: MutableList<Position>
     ) {
 
-        val friendlyPieces = getFriendlyPieces(currentPiece, pieces)
-        val enemyPieces = getEnemyPieces(currentPiece, pieces)
-
+        val friendlyPositions = getFriendlyPieces(currentPiece, pieces).map { it.getPosition() }
+        val enemyPositions = getEnemyPieces(currentPiece, pieces).map { it.getPosition() }
         val currentPosition = currentPiece.getPosition()
-        val friendlyPositions = friendlyPieces.map { it.getPosition() }
-        val enemyPositions = enemyPieces.map { it.getPosition() }
 
         val allPositions = friendlyPositions + enemyPositions
         val limitFunction = { it: Position -> it.x < 9 && it.x > -1 && it.y > -1 && it.y < 9 }

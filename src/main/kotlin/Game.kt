@@ -3,6 +3,7 @@ import pieces.Piece
 import pieces.Position
 import pieces.matchCase
 import rules.*
+import kotlin.math.abs
 
 typealias TurnColor = Boolean
 
@@ -153,12 +154,26 @@ class Game(private val graphics: Graphics, private val pieces: MutableList<Piece
 
     private fun doAdditionalUpdates(currentPiece: Piece) {
 
+        // pawn upgrade
         if (currentPiece.getType() == "P" && currentPiece.getPosition().y == 8) {
             currentPiece.setType("Q")
         } else if (currentPiece.getType() == "p" && currentPiece.getPosition().y == 1) {
             currentPiece.setType("q")
         }
 
+        // castle
+        if (currentPiece.getType().lowercase() == "k" && abs(currentPiece.getPosition().x - currentPiece.getLastPosition().x) > 1) {
+
+            if (currentPiece.getPosition().x == 7) {
+                pieces.find {
+                    it.getType().lowercase() == "r" && it.hasTheSameColor(currentPiece) && it.getPosition().x == 8
+                }!!.move(Position(6, currentPiece.getPosition().y))
+            } else {
+                pieces.find {
+                    it.getType().lowercase() == "r" && it.hasTheSameColor(currentPiece) && it.getPosition().x == 1
+                }!!.move(Position(4, currentPiece.getPosition().y))
+            }
+        }
         selectedPiece = null
     }
 

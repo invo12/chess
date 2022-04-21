@@ -13,8 +13,13 @@ class Piece(private val pieceInfo: PieceInfo) {
         return pieceInfo.position
     }
 
+    fun setPosition(position: Position) {
+        pieceInfo.position = position
+    }
+
     fun move(position: Position) {
         pieceInfo.lastPosition = pieceInfo.position
+        pieceInfo.hasMoved = true
         pieceInfo.position = position
     }
 
@@ -32,5 +37,9 @@ class Piece(private val pieceInfo: PieceInfo) {
 
     fun getLastPosition(): Position {
         return pieceInfo.lastPosition
+    }
+
+    fun hasMoved(): Boolean {
+        return pieceInfo.hasMoved
     }
 }

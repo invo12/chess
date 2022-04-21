@@ -18,19 +18,19 @@ class CheckRule : Rule {
         val oldPosition = currentPiece.getPosition()
 
         for (position in movePositions) {
-            currentPiece.move(position)
+            currentPiece.setPosition(position)
             if (isChecked(king, pieces))
                 positionsToRemove.add(position)
-            currentPiece.move(oldPosition)
+            currentPiece.setPosition(oldPosition)
         }
         movePositions.removeAll { it in positionsToRemove }
 
         positionsToRemove.clear()
         for (position in capturePositions) {
-            currentPiece.move(position)
+            currentPiece.setPosition(position)
             if (isChecked(king, pieces))
                 positionsToRemove.add(position)
-            currentPiece.move(oldPosition)
+            currentPiece.setPosition(oldPosition)
         }
         capturePositions.removeAll { it in positionsToRemove }
     }

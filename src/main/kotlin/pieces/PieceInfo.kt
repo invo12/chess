@@ -11,5 +11,6 @@ data class Position(var x: Int, var y: Int) {
 data class PieceInfo(
     var type: PieceType,
     var position: Position,
-    var lastPosition: Position
+    var lastPosition: Position,
+    var hasMoved: Boolean
 )

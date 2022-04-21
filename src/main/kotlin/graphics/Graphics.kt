@@ -1,6 +1,5 @@
 package graphics
 
-import Images
 import Img
 import pieces.Piece
 import pieces.Position
@@ -56,17 +55,20 @@ class Graphics(
     }
 
     fun updatePieces(pieces: List<Piece>) {
+
         this.pieces = pieces
         this.moveList = listOf()
         repaint()
     }
 
     fun showMoves(moveList: List<Position>) {
+
         this.moveList = moveList
         repaint()
     }
 
     override fun paint(g: Graphics?) {
+
         super.paint(g)
         val graphics2D = (g as? Graphics2D)
         drawBoard(graphics2D!!)
@@ -75,6 +77,7 @@ class Graphics(
     }
 
     fun showEndGameMessage(message: String) {
+
         showMessageDialog(null, message)
         exitProcess(0)
     }

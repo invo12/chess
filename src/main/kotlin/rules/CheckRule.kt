@@ -2,7 +2,6 @@ package rules
 
 import pieces.Piece
 import pieces.Position
-import java.util.*
 import kotlin.math.abs
 
 class CheckRule : Rule {
@@ -59,7 +58,7 @@ fun isChecked(king: Piece, pieces: List<Piece>): Boolean {
     fun checkStraight(): Boolean {
 
         val enemyStraightPieces = enemyPieces.filter {
-            it.getType().lowercase(Locale.getDefault()) == "q" || it.getType().lowercase(Locale.getDefault()) == "r"
+            it.getType().lowercase() == "q" || it.getType().lowercase() == "r"
         }
         val verticalIntervals = listOf(kingPosition.y + 1..8, (1 until kingPosition.y).reversed())
         val horizontalIntervals = listOf(kingPosition.x + 1..8, (1 until kingPosition.x).reversed())
@@ -88,7 +87,7 @@ fun isChecked(king: Piece, pieces: List<Piece>): Boolean {
     fun checkDiagonals(): Boolean {
 
         val enemyDiagonalPieces = enemyPieces.filter {
-            it.getType().lowercase(Locale.getDefault()) == "q" || it.getType().lowercase(Locale.getDefault()) == "b"
+            it.getType().lowercase() == "q" || it.getType().lowercase() == "b"
         }
 
         val plus = { a: Int, b: Int -> a + b }
@@ -125,7 +124,7 @@ fun isChecked(king: Piece, pieces: List<Piece>): Boolean {
         }
 
         val enemyPawn = enemyPieces.find {
-            it.getType() == "p"
+            it.getType().lowercase() == "p"
                     && (it.getPosition() == leftPawnPosition || it.getPosition() == rightPawnPosition)
         }
 
@@ -145,7 +144,7 @@ fun isChecked(king: Piece, pieces: List<Piece>): Boolean {
     fun checkKnights(): Boolean {
 
         val allMoves = knightJumps.map { it + kingPosition }
-        val enemyKnights = enemyPieces.filter { it.getType().lowercase(Locale.getDefault()) == "n" }
+        val enemyKnights = enemyPieces.filter { it.getType().lowercase() == "n" }
 
         return !allMoves.none { position -> enemyKnights.find { it.getPosition() == position } != null }
     }

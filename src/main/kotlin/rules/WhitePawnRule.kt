@@ -18,6 +18,6 @@ class WhitePawnRule : Rule {
         val currentPosition = currentPiece.getPosition()
 
         movePositions.addAll(getMovePositionsForPawns(currentPosition, friendlyPositions, enemyPositions, true))
-        capturePositions.addAll(getCapturePositions(currentPosition, enemyPieces, true))
+        capturePositions.addAll(getCapturePositionsForPawns(currentPosition, enemyPieces, true))
     }
 }

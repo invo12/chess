@@ -19,6 +19,6 @@ class BlackPawnRule : Rule {
         val enemyPositions = enemyPieces.map { it.getPosition() }
 
         movePositions.addAll(getMovePositionsForPawns(currentPosition, friendlyPositions, enemyPositions, false))
-        capturePositions.addAll(getCapturePositions(currentPosition, enemyPieces, false))
+        capturePositions.addAll(getCapturePositionsForPawns(currentPosition, enemyPieces, false))
     }
 }

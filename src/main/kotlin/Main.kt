@@ -1,4 +1,5 @@
 import graphics.Graphics
+import graphics.Images
 import pieces.Piece
 import pieces.PieceInfo
 import pieces.PieceType
@@ -48,7 +49,7 @@ fun loadBoardTiles(blackTilePath: String, whiteTilePath: String): List<Img?> {
     return listOf(blackTile, whiteTile)
 }
 
-fun initPieces(state: String): MutableList<Piece> {
+private fun initPieces(state: String): MutableList<Piece> {
 
     val pieces = mutableListOf<Piece>()
     var rank = 8
@@ -75,23 +76,10 @@ fun initPieces(state: String): MutableList<Piece> {
     return pieces
 }
 
-object Images {
-    private val path = "src/main/resources/"
-    private val tileImages = loadBoardTiles("$path/blackTile.png", "$path/whiteTile.png")
-
-    val blackTileImage = tileImages[0]!!
-    val whiteTileImage = tileImages[1]!!
-    val pieceImages = loadPieceImages("$path/pieces.png")
-    val moveImage = readImage("$path/move.png")!!
-
-    const val offsetX = 3
-    const val offsetY = 30
-    const val tileSize = 64
-}
-
 fun main() {
 
-    val pieces = initPieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+    val path = "src/main/resources/configuration.txt"
+    val pieces = initPieces(File(path).readText())
 
     val graphics = Graphics(pieces)
 

@@ -3,13 +3,13 @@ package rules
 import pieces.Piece
 import pieces.Position
 
-val knightJumps = listOf(
+internal val knightJumps = listOf(
     Position(-2, 1), Position(-1, 2), Position(1, 2), Position(2, 1),
     Position(2, -1), Position(1, -2), Position(-1, -2), Position(-2, -1)
 )
 
 // for pawns
-fun getMovePositionsForPawns(
+internal fun getMovePositionsForPawns(
     currentPosition: Position, friendlyPositions: List<Position>,
     enemyPositions: List<Position>, up: Boolean
 ): List<Position> {
@@ -34,7 +34,7 @@ fun getMovePositionsForPawns(
 }
 
 // for pawns
-fun getCapturePositions(currentPosition: Position, enemyPieces: List<Piece>, up: Boolean): List<Position> {
+internal fun getCapturePositionsForPawns(currentPosition: Position, enemyPieces: List<Piece>, up: Boolean): List<Position> {
 
     fun getEnPassantPositions(): List<Position> {
 
@@ -60,7 +60,7 @@ fun getCapturePositions(currentPosition: Position, enemyPieces: List<Piece>, up:
 }
 
 // for king and knight
-fun separateMovementAndCapturePositions(
+internal fun separateMovementAndCapturePositions(
     allMoves: List<Position>, friendlyPositions: List<Position>,
     enemyPositions: List<Position>
 ): Pair<List<Position>, List<Position>> {
@@ -74,7 +74,7 @@ fun separateMovementAndCapturePositions(
     return Pair(movementPositions, captureMoves)
 }
 
-fun takeAllPositionsTillLimit(
+internal fun takeAllPositionsTillLimit(
     currentPosition: Position,
     terminationFunction: (Position) -> Boolean,
     increment: Position
@@ -85,7 +85,7 @@ fun takeAllPositionsTillLimit(
         .toList()
 }
 
-fun getLineMoves(
+internal fun getLineMoves(
     currentPosition: Position,
     enemyPositions: List<Position>,
     allPositions: List<Position>,
@@ -106,10 +106,10 @@ fun getLineMoves(
     return Pair(movePositions, capturePositions)
 }
 
-fun getFriendlyPieces(currentPiece: Piece, pieces: List<Piece>): List<Piece> {
+internal fun getFriendlyPieces(currentPiece: Piece, pieces: List<Piece>): List<Piece> {
     return pieces.filter { it.hasTheSameColor(currentPiece) }
 }
 
-fun getEnemyPieces(currentPiece: Piece, pieces: List<Piece>): List<Piece> {
+internal fun getEnemyPieces(currentPiece: Piece, pieces: List<Piece>): List<Piece> {
     return pieces.filter { !it.hasTheSameColor(currentPiece) }
 }
